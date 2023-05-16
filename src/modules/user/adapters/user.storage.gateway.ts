@@ -7,7 +7,7 @@ import { UpdateUserDto } from "./dto/update-user";
 export class UserStorageGateway implements UserRepository{
     async findAll(): Promise<ResponseApi<User>> {
         return await fetch('http://localhost:3001/users').then(response => response.json())
-            .then(({data})=>{
+            .then((data)=>{
                 return {
                     code: 200,
                     message: 'OK',
@@ -19,12 +19,12 @@ export class UserStorageGateway implements UserRepository{
     }
     async findById(id: string): Promise<ResponseApi<User>> {
         return await fetch(`http://localhost:3001/users/${id}`).then(response => response.json())
-            .then(({data}) => {
+            .then((data) => {
                 return {
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entities: data,
+                    entity: data[0],
                     count: data.length
                 } as ResponseApi<User>
             }).catch(() => this.getError())
@@ -37,12 +37,12 @@ export class UserStorageGateway implements UserRepository{
                 'Content-Type': 'application/json'
             }
         }).then(response => response.json())
-            .then(({data}) => {
+            .then((data) => {
                 return {
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entities: data,
+                    entity: data[0],
                     count: data.length
                 } as ResponseApi<User>
             }).catch(() => this.getError())
@@ -55,12 +55,12 @@ export class UserStorageGateway implements UserRepository{
                 'Content-Type': 'application/json'
             }
         }).then(response => response.json())
-            .then(({data}) => {
+            .then((data) => {
                 return {
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entities: data,
+                    entity: data[0],
                     count: data.length
                 } as ResponseApi<User>
             })

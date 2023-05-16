@@ -22,6 +22,16 @@ const routes: Array<RouteConfig> = [
     path: '/computers',
     name: 'computers',
     component: () => import('../modules/computer/adapters/view/ComputersList.vue')
+  },
+  {
+    path: '/computers/:id',
+    name: 'computer',
+    component: () => import('../modules/computer/adapters/view/ComputerEdit.vue')
+  },
+  {
+    path: '/computers/create',
+    name: 'ComputerCreate',
+    component: () => import('../modules/computer/adapters/view/ComputerCreate.vue')
   }
 ]
 

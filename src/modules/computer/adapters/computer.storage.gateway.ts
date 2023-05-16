@@ -7,8 +7,8 @@ import { DeleteComputerDto } from "./dto/delete-computer";
 
 export class ComputerStorageGateway implements ComputerRepository{
     async findAll(): Promise<ResponseApi<Computer>> {
-        return await fetch('http://localhost:3001/computers').then(response => response.json())
-            .then(({data})=>{
+        return await fetch("http://localhost:3001/computers").then(response => response.json())
+            .then((data)=>{
                 return {
                     code: 200,
                     message: 'OK',
@@ -21,12 +21,12 @@ export class ComputerStorageGateway implements ComputerRepository{
     }
     async findById(id: string): Promise<ResponseApi<Computer>> {
         return await fetch(`http://localhost:3001/computers/${id}`).then(response => response.json())
-            .then(({data}) => {
+            .then((data) => {
                 return {
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entities: data,
+                    entity: data[0],
                     count: data.length
                 } as ResponseApi<Computer>
             }).catch(() => this.getError())
@@ -39,12 +39,12 @@ export class ComputerStorageGateway implements ComputerRepository{
                 'Content-Type': 'application/json'
             }
         }).then(response => response.json())
-            .then(({data}) => {
+            .then((data) => {
                 return {
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entities: data,
+                    entity: data[0],
                     count: data.length
                 } as ResponseApi<Computer>
             }).catch(() => this.getError())
@@ -57,12 +57,12 @@ export class ComputerStorageGateway implements ComputerRepository{
                 'Content-Type': 'application/json'
             }
         }).then(response => response.json())
-            .then(({data}) => {
+            .then((data) => {
                 return {
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entities: data,
+                    entity: data[0],
                     count: data.length
                 } as ResponseApi<Computer>
             }).catch(() => this.getError())
@@ -74,12 +74,12 @@ export class ComputerStorageGateway implements ComputerRepository{
                 'Content-Type': 'application/json'
             }
         }).then(response => response.json())
-            .then(({data}) => {
+            .then((data) => {
                 return {
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entities: data,
+                    entity: data[0],
                     count: data.length
                 } as ResponseApi<Computer>
             }).catch(() => this.getError())
