@@ -8,10 +8,11 @@
         >Crear computadora</router-link
       >
     </div>
-    <div class="table-container">
+    <div class="table-container" v-if="computers.length > 0">
       <table class="table" id="tabla">
         <thead>
           <tr>
+            <td class="col1">ID</td>
             <td>Número de serie</td>
             <td>Modelo</td>
             <td>ID usuario</td>
@@ -19,7 +20,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="computer in computers" :key="computer.id">
+          <tr v-for="computer in computers" :key="computer._id">
+            <td class="col1">
+              {{ computer._id }}
+            </td>
             <td>
               {{ computer.numSerie }}
             </td>
@@ -31,11 +35,11 @@
             </td>
             <td>
               <router-link
-                :to="{ name: 'computer', params: { id: computer.id } }"
+                :to="{ name: 'computer', params: { id: computer._id } }"
                 >Editar</router-link
               >
               <button
-                v-on:click="deleteComputer(computer.id)"
+                v-on:click="deleteComputer(computer._id)"
                 class="btn-eliminar"
               >
                 Eliminar
@@ -44,6 +48,9 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div v-else>
+      <p>cargando...</p>
     </div>
     <div style="margin-top: 10px">
       <button v-on:click="exportarExcel()">Generar Excel</button>
@@ -55,7 +62,6 @@
 import Vue from "vue";
 import { ComputerController } from "../computer.controller";
 import { Computer } from "../../entities/computer";
-import { ResponseApi } from "@/kernel/types";
 import XLSX from "xlsx";
 import { DeleteComputerDto } from "../dto/delete-computer";
 
@@ -73,47 +79,43 @@ export default Vue.extend({
       const response = await controller.findAllComputers();
       this.computers = response.entities!;
     },
-    async deleteComputer(id: string) {
+
+    async deleteComputer(_id: string) {
       const controller = new ComputerController();
-      await controller.deleteComputer({ id } as DeleteComputerDto);
+      await controller.deleteComputer({ _id } as DeleteComputerDto);
       window.location.reload();
     },
+
     async exportarExcel() {
-      const worksheet = XLSX.utils.aoa_to_sheet(this.data);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Libro1");
-      const excelBuffer = XLSX.write(workbook, {
-        type: "buffer",
-        bookType: "xlsx",
-      });
-      const blob = new Blob([excelBuffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
+      if (this.computers.length > 0) {
+        const worksheet = XLSX.utils.aoa_to_sheet(this.data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Libro1");
 
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "copmutadoras.xlsx";
-      link.click();
-
-      URL.revokeObjectURL(url);
-    },
-    createArray() {
-      const titles = ["Numero de serie", "Modelo", "ID usuario"];
-      const data = new Array(this.computers.length + 1);
-      data[0] = new Array(titles.length);
-      data[0] = [...titles];
-      let j = 0;
-      for (let i = 0; i < this.computers.length; i++) {
-        data[i + 1] = new Array(titles.length);
-        data[i + 1][j] = this.computers[i].numSerie;
-        j++;
-        data[i + 1][j] = this.computers[i].modelo;
-        j++;
-        data[i + 1][j] = this.computers[i].iduser;
-        j = 0;
+        XLSX.writeFile(workbook, "computadoras.xlsx");
+      } else {
+        alert("No hay datos para exportar");
       }
-      this.data = data;
+    },
+
+    createArray() {
+      if (this.computers.length > 0) {
+        const titles = ["Numero de serie", "Modelo", "ID usuario"];
+        const data = new Array(this.computers.length + 1);
+        data[0] = new Array(titles.length);
+        data[0] = [...titles];
+        let j = 0;
+        for (let i = 0; i < this.computers.length; i++) {
+          data[i + 1] = new Array(titles.length);
+          data[i + 1][j] = this.computers[i].numSerie;
+          j++;
+          data[i + 1][j] = this.computers[i].modelo;
+          j++;
+          data[i + 1][j] = this.computers[i].iduser;
+          j = 0;
+        }
+        this.data = data;
+      }
     },
   },
   mounted() {
@@ -132,6 +134,14 @@ export default Vue.extend({
 }
 .table {
   border: 1px solid #c6c6c6;
+  border-collapse: collapse;
+  background-color: #a3b2cf;
+  font-weight: bold;
+}
+.col1 {
+  width: 10%;
+  text-align: left;
+  font-style: italic;
 }
 .table thead tr td {
   font-weight: bold;

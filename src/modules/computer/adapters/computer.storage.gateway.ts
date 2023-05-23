@@ -19,14 +19,14 @@ export class ComputerStorageGateway implements ComputerRepository{
             }).catch(() => this.getError())
 
     }
-    async findById(id: string): Promise<ResponseApi<Computer>> {
-        return await fetch(`http://localhost:3001/computers/${id}`).then(response => response.json())
+    async findById(_id: string): Promise<ResponseApi<Computer>> {
+        return await fetch(`http://localhost:3001/computers/${_id}`).then(response => response.json())
             .then((data) => {
                 return {
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entity: data[0],
+                    entity: data,
                     count: data.length
                 } as ResponseApi<Computer>
             }).catch(() => this.getError())
@@ -44,13 +44,13 @@ export class ComputerStorageGateway implements ComputerRepository{
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entity: data[0],
+                    entity: data,
                     count: data.length
                 } as ResponseApi<Computer>
             }).catch(() => this.getError())
     }
     async update(computer: UpdateComputerDto): Promise<ResponseApi<Computer>> {
-        return await fetch(`http://localhost:3001/computers/${computer.id}`, {
+        return await fetch(`http://localhost:3001/computers/${computer._id}`, {
             method: 'PUT',
             body: JSON.stringify(computer),
             headers: {
@@ -62,13 +62,13 @@ export class ComputerStorageGateway implements ComputerRepository{
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entity: data[0],
+                    entity: data,
                     count: data.length
                 } as ResponseApi<Computer>
             }).catch(() => this.getError())
     }
     async delete(id: DeleteComputerDto): Promise<ResponseApi<Computer>> {
-        return await fetch(`http://localhost:3001/computers/${id.id}`, {
+        return await fetch(`http://localhost:3001/computers/${id._id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ export class ComputerStorageGateway implements ComputerRepository{
                     code: 200,
                     message: 'OK',
                     error: false,
-                    entity: data[0],
+                    entity: data,
                     count: data.length
                 } as ResponseApi<Computer>
             }).catch(() => this.getError())

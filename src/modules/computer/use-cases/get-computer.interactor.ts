@@ -8,6 +8,6 @@ export class GetComputerInteractor implements UseCase<GetComputerDto, ResponseAp
     constructor(private readonly repository: ComputerRepository) {}
 
     execute(input: GetComputerDto): Promise<ResponseApi<Computer>> {
-        return this.repository.findById(input.id);
+        return this.repository.findById(input._id);
     }
 }

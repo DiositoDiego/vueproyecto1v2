@@ -1,3 +1,3 @@
 export type DeleteComputerDto = {
-    id: string,
+    _id: string,
 }

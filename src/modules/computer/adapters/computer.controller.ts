@@ -28,12 +28,12 @@ export class ComputerController {
         }
     }
 
-    findComputerById(id: string){
+    findComputerById(_id: string){
         const repository: ComputerRepository = new ComputerStorageGateway();
         const interactor: GetComputerInteractor = new GetComputerInteractor(repository);
 
         try {
-            return interactor.execute({id} as GetComputerDto);
+            return interactor.execute({_id} as GetComputerDto);
         } catch (error) {
             return {
                 code: 500,

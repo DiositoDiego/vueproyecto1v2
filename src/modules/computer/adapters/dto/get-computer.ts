@@ -1,5 +1,5 @@
 export type GetComputerDto = {
-    id: string,
+    _id: string,
     numSerie: string,
     modelo: string,
     iduser: string,
