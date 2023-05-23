@@ -64,6 +64,7 @@ import { ComputerController } from "../computer.controller";
 import { Computer } from "../../entities/computer";
 import XLSX from "xlsx";
 import { DeleteComputerDto } from "../dto/delete-computer";
+import ExcelJS from "exceljs";
 
 export default Vue.extend({
   name: "ComputersList",
@@ -88,11 +89,62 @@ export default Vue.extend({
 
     async exportarExcel() {
       if (this.computers.length > 0) {
-        const worksheet = XLSX.utils.aoa_to_sheet(this.data);
+        const wb = new ExcelJS.Workbook();
+        const ws = wb.addWorksheet("Computadoras");
+        ws.autoFilter = {
+          from: "A1",
+          to: "C1",
+        };
+        ws.columns = [
+          { header: "Numero de serie", key: "numSerie" },
+          { header: "Modelo", key: "modelo" },
+          { header: "ID usuario", key: "iduser" },
+        ];
+        const rows = [...this.data.slice(1)];
+        ws.addRows(rows);
+        var j = 65;
+        for (var i = 0; i < this.data[0].length; i++) {
+          ws.getCell(String.fromCharCode(j) + `${i + 1}`).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFC6C6C6" },
+          };
+        }
+        j = 65;
+        for (var l = 0; l < this.data.length; l++) {
+          ws.getCell(String.fromCharCode(j) + `${l + 1}`).border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          ws.getCell(String.fromCharCode(j) + `${l + 1}`).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "A3B2CF" },
+          };
+          j++;
+          if (j == 69) {
+            j = 65;
+          }
+        }
+        const buffer = await wb.xlsx.writeBuffer();
+        const fileName = "Computadoras.xlsx"; // <= cabezera personalizada
+        const url = window.URL.createObjectURL(new Blob([buffer], { type: "application/octet-stream" }));
+        const link = document.createElement("a");
+        link.href = url;
+        // link.setAttribute('download', fileName);
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        ////////////////////////////////////////////////
+
+        /* const worksheet = XLSX.utils.aoa_to_sheet(this.data);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Libro1");
 
-        XLSX.writeFile(workbook, "computadoras.xlsx");
+        XLSX.writeFile(workbook, "computadoras.xlsx"); */
       } else {
         alert("No hay datos para exportar");
       }
