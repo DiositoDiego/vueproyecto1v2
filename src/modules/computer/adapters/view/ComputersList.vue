@@ -102,6 +102,14 @@ export default Vue.extend({
         ];
         const rows = [...this.data.slice(1)];
         ws.addRows(rows);
+        //ajusta automaticamente el ancho de las columnas al contenido del header de las mismas xd
+        ws.eachColumnKey((column) => {
+          column.width = column.header!.length
+        });
+
+        ws.eachColumnKey((column) => {
+          column.width = 20;
+        });
 
         ws.eachRow((row) => {
           row.eachCell((cell) => {
