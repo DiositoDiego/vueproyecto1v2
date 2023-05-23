@@ -102,38 +102,32 @@ export default Vue.extend({
         ];
         const rows = [...this.data.slice(1)];
         ws.addRows(rows);
-        var j = 65;
-        for (var i = 0; i < this.data[0].length; i++) {
-          ws.getCell(String.fromCharCode(j) + `${i + 1}`).fill = {
+
+        ws.eachRow((row) => {
+          row.eachCell((cell) => {
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "A3B2CF" },
+            };
+          });
+        });
+
+        ws.getRow(1).eachCell((cell) => {
+          cell.fill = {
             type: "pattern",
             pattern: "solid",
             fgColor: { argb: "FFC6C6C6" },
           };
-        }
-        j = 65;
-        for (var l = 0; l < this.data.length; l++) {
-          ws.getCell(String.fromCharCode(j) + `${l + 1}`).border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" },
-          };
-          ws.getCell(String.fromCharCode(j) + `${l + 1}`).fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: "A3B2CF" },
-          };
-          j++;
-          if (j == 69) {
-            j = 65;
-          }
-        }
+        });
+
         const buffer = await wb.xlsx.writeBuffer();
-        const fileName = "Computadoras.xlsx"; // <= cabezera personalizada
-        const url = window.URL.createObjectURL(new Blob([buffer], { type: "application/octet-stream" }));
+        const fileName = "Computadoras.xlsx";
+        const url = window.URL.createObjectURL(
+          new Blob([buffer], { type: "application/octet-stream" })
+        );
         const link = document.createElement("a");
         link.href = url;
-        // link.setAttribute('download', fileName);
         link.setAttribute("download", fileName);
         document.body.appendChild(link);
         link.click();
